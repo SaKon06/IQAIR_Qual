@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Качество воздуха</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f8;
+            margin: 0;
+            padding: 40px;
+        }
+        .card {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-top: 0;
+            text-align: center;
+        }
+        .location {
+            text-align: center;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            font-size: 18px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 6px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .item {
+            background: #f8f9fb;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .label {
+            font-size: 12px;
+            color: #666;
+        }
+        .value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Качество воздуха</h1>
+    <div class="location">
+        {{ data.city }}, {{ data.state }}<br>
+        {{ data.country }}
+    </div>
+
+    <div class="section">
+        <h2>Индекс загрязнения</h2>
+        <div class="grid">
+            <div class="item">
+                <div class="label">AQI (US)</div>
+                <div class="value">{{ data.pollution.aqius }}</div>
+            </div>
+            <div class="item">
+                <div class="label">AQI (CN)</div>
+                <div class="value">{{ data.pollution.aqicn }}</div>
+            </div>
+            <div class="item">
+                <div class="label">Основной загрязнитель (US)</div>
+                <div class="value">{{ data.pollution.mainus }}</div>
+            </div>
+            <div class="item">
+                <div class="label">Основной загрязнитель (CN)</div>
+                <div class="value">{{ data.pollution.maincn }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Погода</h2>
+        <div class="grid">
+            <div class="item">
+                <div class="label">Температура</div>
+                <div class="value">{{ data.weather.temperature }} °C</div>
+            </div>
+            <div class="item">
+                <div class="label">Влажность</div>
+                <div class="value">{{ data.weather.humidity }}%</div>
+            </div>
+            <div class="item">
+                <div class="label">Давление</div>
+                <div class="value">{{ data.weather.pressure }} hPa</div>
+            </div>
+            <div class="item">
+                <div class="label">Ветер</div>
+                <div class="value">{{ data.weather.wind_speed }} м/с</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
