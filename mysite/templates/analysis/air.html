@@ -9,19 +9,32 @@
             background: #f2f4f8;
             margin: 0;
             padding: 40px;
-            position: relative;
+            
         }
-        .bg-plot{
+        .layout {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px;
+        }
+        .plot-container {
+            flex: 1;
+            min-width: 450px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        /*.bg-plot{               
             position: absolute;
-            top: 80px;                 /* подстройте по высоте */
+            top: 80px;   
             left: 8%;
             transform: translateX(0);
-            width: 700px;            /* желаемый размер */
+            width: 700px;     
             max-width: 40vw;
-            opacity: 0.35;            /* прозрачность, чтобы фон не мешал */
+            opacity: 0.35; 
             z-index: 0;
             pointer-events: none;
-        }
+        }*/
         .card {
             position: relative; 
             z-index: 1;
@@ -73,8 +86,11 @@
 </head>
 <body>
 
-<img src="{% url 'air_plot' %}?t={{ data.timestamp|urlencode }}" alt="AQI plot" class="bg-plot">
 
+<div class="layout">
+<div class="plot">
+    <img src="{% url 'air_plot' %}?t={{ data.timestamp|urlencode }}" alt="AQI plot" >
+</div>
 <div class="card">
     <h1>Качество воздуха</h1>
     <div class="location">
@@ -127,6 +143,6 @@
         </div>
     </div>
 </div>
-
+</div>
 </body>
 </html>
