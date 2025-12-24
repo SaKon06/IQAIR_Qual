@@ -1,6 +1,8 @@
 import requests
 import pandas as pd
-import matplotlib as plt
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 from io import BytesIO
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -53,4 +55,28 @@ def air_quality(request):
     return render(request, "analysis/air.html", {"data": data})
 
 
+def air_plot(request):
+# убираем повторы и отсортировать
+    df_local = df_updated
+    df_local = df_local.drop_duplicates(subset='timestamp', keep='last')
+    df_local = df_local.sort_values('timestamp')
 
+
+# возьмём AQI (US) и timestamp из df
+    times = pd.to_datetime(df_local['timestamp'], unit='ms', errors='coerce')
+    aqi = df_local['pollution'].apply(lambda p: p.get('aqius') if isinstance(p, dict) else None)
+
+
+    plt.figure(figsize=(10,3), dpi=120)
+    plt.plot(times, aqi, marker='o', linestyle='-', color='#2c7fb8', linewidth=2)
+    plt.fill_between(times, aqi, alpha=0.1, color='#2c7fb8')
+    plt.title('AQI (US) — история')
+    plt.ylabel('AQI (US)', fontsize=10)
+    plt.grid(alpha=0.25)
+    plt.tight_layout()
+
+    buf = BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    plt.close()
+    buf.seek(0)
+    return HttpResponse(buf.getvalue(), content_type='image/png')

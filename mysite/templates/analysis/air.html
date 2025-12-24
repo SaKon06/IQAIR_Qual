@@ -9,10 +9,25 @@
             background: #f2f4f8;
             margin: 0;
             padding: 40px;
+            position: relative;
+        }
+        .bg-plot{
+            position: absolute;
+            top: 80px;                 /* подстройте по высоте */
+            left: 8%;
+            transform: translateX(0);
+            width: 700px;            /* желаемый размер */
+            max-width: 40vw;
+            opacity: 0.35;            /* прозрачность, чтобы фон не мешал */
+            z-index: 0;
+            pointer-events: none;
         }
         .card {
+            position: relative; 
+            z-index: 1;
             max-width: 600px;
-            margin: auto;
+            margin-left: auto;
+            margin-right: auto;
             background: white;
             border-radius: 12px;
             padding: 24px;
@@ -58,6 +73,8 @@
 </head>
 <body>
 
+<img src="{% url 'air_plot' %}?t={{ data.timestamp|urlencode }}" alt="AQI plot" class="bg-plot">
+
 <div class="card">
     <h1>Качество воздуха</h1>
     <div class="location">
@@ -84,6 +101,7 @@
                 <div class="label">Основной загрязнитель (CN)</div>
                 <div class="value">{{ data.pollution.maincn }}</div>
             </div>
+            
         </div>
     </div>
 
