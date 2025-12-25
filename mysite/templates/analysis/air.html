@@ -16,6 +16,10 @@
             align-items: flex-start;
             gap: 40px;
         }
+        .plot{
+            flex: 1 1 60%;
+            min-width: 400px;
+        }
         .plot-container {
             flex: 1;
             min-width: 450px;
@@ -38,7 +42,7 @@
         .card {
             position: relative; 
             z-index: 1;
-            max-width: 600px;
+            width: 600px;
             margin-left: auto;
             margin-right: auto;
             background: white;
@@ -90,6 +94,7 @@
 <div class="layout">
 <div class="plot">
     <img src="{% url 'air_plot' %}?t={{ data.timestamp|urlencode }}" alt="AQI plot" >
+    <img src="{% url 'temp_plot' %}?t={{ data.timestamp|urlencode }}" alt="Temperature plot" >
 </div>
 <div class="card">
     <h1>Качество воздуха</h1>

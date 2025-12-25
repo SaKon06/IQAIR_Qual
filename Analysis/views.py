@@ -58,20 +58,23 @@ def air_quality(request):
     return render(request, "analysis/air.html", {"data": data})
 
 
-
-
-
-
 def air_plot(request):
 # убираем повторы и отсортировать
     df_local = df_updated.drop_duplicates(subset='timestamp', keep='last').sort_values('timestamp')
     df_local = df_local.set_index('timestamp')
 
-    df_local['aqius'] = df_local['pollution'].apply(lambda p: p.get('aqius') if isinstance(p, dict) else None).astype(float)
+    #df_local['aqius'] = df_local['pollution'].apply(lambda p: p.get('aqius') if isinstance(p, dict) else None).astype(float)
+    df_local['aqius'] = pd.to_numeric(
+        df_local['pollution'].apply(lambda p: p.get('aqius') if isinstance(p, dict) else None),
+        errors='coerce'
+    )
+
 
 # возьмём AQI (US) и timestamp из df
     #times = pd.to_datetime(df_local['timestamp'], unit='ms', errors='coerce')
     daily = df_local['aqius'].resample('D').mean().dropna()
+    if daily.empty:
+        return HttpResponse(status=204)
     times = daily.index
     aqi = daily.values
 
@@ -80,6 +83,40 @@ def air_plot(request):
     plt.fill_between(times, aqi, alpha=0.1, color='#2c7fb8')
     plt.title('AQI (US) — история')
     plt.ylabel('AQI (US)', fontsize=10)
+    plt.grid(alpha=0.25)
+    plt.tight_layout()
+
+    buf = BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    plt.close()
+    buf.seek(0)
+    return HttpResponse(buf.getvalue(), content_type='image/png')
+
+
+def temp_plot(request):
+# убираем повторы и отсортировать
+    df_local = df_updated.drop_duplicates(subset='timestamp', keep='last').sort_values('timestamp')
+    df_local = df_local.set_index('timestamp')
+
+    #df_local['temperature'] = df_local['weather'].apply(lambda p: p.get('temperature') if isinstance(p, dict) else None)
+    df_local['temperature'] = pd.to_numeric(
+        df_local['weather'].apply(lambda p: p.get('temperature') if isinstance(p, dict) else None),
+        errors='coerce'
+    )
+
+
+# возьмём temp и timestamp из df
+    daily = df_local['temperature'].resample('D').mean().dropna()
+    if daily.empty:
+        return HttpResponse(status=204)
+    times = daily.index
+    temp = daily.values
+
+    plt.figure(figsize=(8,3), dpi=120)
+    plt.plot(times, temp, marker='o', linestyle='-', color='#2c7fb8', linewidth=2)
+    plt.fill_between(times, temp, alpha=0.1, color='#2c7fb8')
+    plt.title('Temperature — история')
+    plt.ylabel('Temperature', fontsize=10)
     plt.grid(alpha=0.25)
     plt.tight_layout()
 
